@@ -36,3 +36,4 @@
 git clone <repository-url>
 
 # 2. Запустите приложение через SecurityConfig
+<img width="1280" height="573" alt="image" src="https://github.com/user-attachments/assets/e4228ec3-f608-4cdf-9322-73d3751ee21b" />
