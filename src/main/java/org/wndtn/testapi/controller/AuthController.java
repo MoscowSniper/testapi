@@ -1,4 +1,4 @@
-package org.wndtn.testapi;
+package org.wndtn.testapi.controller;
 
 
 import org.springframework.web.bind.annotation.*;

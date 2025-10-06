@@ -1,8 +1,8 @@
-package org.wndtn.testapi;
+package org.wndtn.testapi.controller;
 
 
-import org.wndtn.testapi.User;
-import org.wndtn.testapi.UserService;
+import org.wndtn.testapi.model.User;
+import org.wndtn.testapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

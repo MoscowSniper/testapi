@@ -1,4 +1,4 @@
-package org.wndtn.testapi;
+package org.wndtn.testapi.model;
 
 
 import jakarta.persistence.*;

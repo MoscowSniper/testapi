@@ -1,7 +1,7 @@
-package org.wndtn.testapi;
+package org.wndtn.testapi.repository;
 
 
-import org.wndtn.testapi.User;
+import org.wndtn.testapi.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

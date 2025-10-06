@@ -1,7 +1,7 @@
-package org.wndtn.testapi;
+package org.wndtn.testapi.repository;
 
 
-import org.wndtn.testapi.Order;
+import org.wndtn.testapi.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

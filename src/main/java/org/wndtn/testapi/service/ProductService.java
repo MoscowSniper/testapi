@@ -1,12 +1,13 @@
-package org.wndtn.testapi;
+package org.wndtn.testapi.service;
 
 
-import org.wndtn.testapi.Product;
-import org.wndtn.testapi.ProductRepository;
+import org.wndtn.testapi.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.wndtn.testapi.repository.ProductRepository;
+
 import java.util.List;
 import java.util.Optional;
 

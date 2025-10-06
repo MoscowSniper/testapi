@@ -1,8 +1,8 @@
-package org.wndtn.testapi;
+package org.wndtn.testapi.controller;
 
 
-import org.wndtn.testapi.Order;
-import org.wndtn.testapi.OrderService;
+import org.wndtn.testapi.model.Order;
+import org.wndtn.testapi.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
