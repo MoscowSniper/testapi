@@ -1,0 +1,776 @@
+{
+  "info": {
+    "_postman_id": "2ce3a6cd-ef39-4cf5-ad64-70de4816131d",
+    "name": "My API Testing Collection - Complete",
+    "description": "Полная коллекция для тестирования Spring Boot API с исправленными тестами и предварительными данными",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48202758",
+    "_collection_link": "https://moscowsniper-3544523.postman.co/workspace/Bogdan's-Workspace~9b4101cc-92ab-4e73-80b9-9980d2dd4050/collection/48202758-2ce3a6cd-ef39-4cf5-ad64-70de4816131d?action=share&source=collection_link&creator=48202758"
+  },
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Login - получение токена",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Базовые проверки",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 500ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is present\", function () {",
+                  "    pm.response.to.have.header(\"Content-Type\");",
+                  "});",
+                  "",
+                  "// Проверка структуры ответа",
+                  "pm.test(\"Login returns auth token\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('access_token');",
+                  "    pm.expect(response).to.have.property('refresh_token');",
+                  "    pm.expect(response.access_token).to.be.a('string');",
+                  "});",
+                  "",
+                  "// Сохранение токенов в переменные",
+                  "pm.test(\"Set environment variables\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set(\"auth_token\", response.access_token);",
+                  "    pm.environment.set(\"auth_token\", response.access_token);",
+                  "    console.log(\"Auth token set: \" + response.access_token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token - обновление токена",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{auth_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout - инвалидация токена",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 Users",
+      "item": [
+        {
+          "name": "Get All Users (с пагинацией)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Базовые проверки",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 500ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is present\", function () {",
+                  "    pm.response.to.have.header(\"Content-Type\");",
+                  "});",
+                  "",
+                  "// Проверка структуры ответа",
+                  "pm.test(\"Response is JSON array\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(Array.isArray(response)).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Базовые проверки",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Проверка структуры ответа",
+                  "pm.test(\"Response has correct user structure\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.have.property('id');",
+                  "    pm.expect(response).to.have.property('name');",
+                  "    pm.expect(response).to.have.property('email');",
+                  "    pm.expect(response).to.have.property('createdAt');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Базовые проверки",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Безопасное сохранение user_id",
+                  "pm.test(\"Set user_id variable\", function () {",
+                  "    if (pm.response.code === 200 && pm.response.text().trim() !== '') {",
+                  "        try {",
+                  "            const response = pm.response.json();",
+                  "            if (response.id) {",
+                  "                pm.collectionVariables.set(\"user_id\", response.id);",
+                  "                pm.environment.set(\"user_id\", response.id);",
+                  "                console.log(\"user_id set to: \" + response.id);",
+                  "            }",
+                  "        } catch (e) {",
+                  "            console.log(\"Error parsing JSON response: \" + e.message);",
+                  "        }",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Smith Updated\",\n  \"email\": \"john.updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📦 Products",
+      "item": [
+        {
+          "name": "Get Products (с фильтрацией)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product - Laptop",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Безопасное сохранение product_id_1",
+                  "if (pm.response.code === 200 && pm.response.text().trim() !== '') {",
+                  "    try {",
+                  "        const response = pm.response.json();",
+                  "        if (response.id) {",
+                  "            pm.collectionVariables.set(\"product_id_1\", response.id);",
+                  "            pm.environment.set(\"product_id_1\", response.id);",
+                  "            console.log(\"product_id_1 set to: \" + response.id);",
+                  "        }",
+                  "    } catch (e) {",
+                  "        console.log(\"Error parsing JSON response: \" + e.message);",
+                  "    }",
+                  "} else {",
+                  "    console.log(\"Response is empty or not 200. Status: \" + pm.response.code);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ноутбук игровой\",\n  \"description\": \"Мощный игровой ноутбук с процессором Intel Core i7\",\n  \"price\": 150000.00,\n  \"quantity\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product - Smartphone",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Безопасное сохранение product_id_2",
+                  "if (pm.response.code === 200 && pm.response.text().trim() !== '') {",
+                  "    try {",
+                  "        const response = pm.response.json();",
+                  "        if (response.id) {",
+                  "            pm.collectionVariables.set(\"product_id_2\", response.id);",
+                  "            pm.environment.set(\"product_id_2\", response.id);",
+                  "            console.log(\"product_id_2 set to: \" + response.id);",
+                  "        }",
+                  "    } catch (e) {",
+                  "        console.log(\"Error parsing JSON response: \" + e.message);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Смартфон флагман\",\n  \"description\": \"Флагманский смартфон с камерой 200 МП\",\n  \"price\": 89999.99,\n  \"quantity\": 15\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product - Headphones",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Безопасное сохранение product_id_3",
+                  "if (pm.response.code === 200 && pm.response.text().trim() !== '') {",
+                  "    try {",
+                  "        const response = pm.response.json();",
+                  "        if (response.id) {",
+                  "            pm.collectionVariables.set(\"product_id_3\", response.id);",
+                  "            pm.environment.set(\"product_id_3\", response.id);",
+                  "            console.log(\"product_id_3 set to: \" + response.id);",
+                  "        }",
+                  "    } catch (e) {",
+                  "        console.log(\"Error parsing JSON response: \" + e.message);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Беспроводные наушники\",\n  \"description\": \"Наушники с активным шумоподавлением\",\n  \"price\": 12900.50,\n  \"quantity\": 30\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Product\",\n  \"description\": \"Updated description\",\n  \"price\": 149.99,\n  \"quantity\": 25\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id_1}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id_1}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🛒 Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Безопасное сохранение order_id",
+                  "if (pm.response.code === 200 && pm.response.text().trim() !== '') {",
+                  "    try {",
+                  "        const response = pm.response.json();",
+                  "        if (response.id) {",
+                  "            pm.collectionVariables.set(\"order_id\", response.id);",
+                  "            pm.environment.set(\"order_id\", response.id);",
+                  "            console.log(\"order_id set to: \" + response.id);",
+                  "        }",
+                  "    } catch (e) {",
+                  "        console.log(\"Error parsing JSON response: \" + e.message);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{user_id}},\n  \"products\": {\n    \"{{product_id_1}}\": 1,\n    \"{{product_id_2}}\": 2,\n    \"{{product_id_3}}\": 1\n  },\n  \"totalAmount\": 342800.48\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/orders/user/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "user",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🚀 Test Scenarios",
+      "item": [
+        {
+          "name": "Performance Test - Multiple Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users?page=0&size=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Pre-request script для автоматической подстановки токена",
+          "const token = pm.collectionVariables.get(\"auth_token\");",
+          "if (token && token !== \"\") {",
+          "    pm.request.headers.add({",
+          "        key: \"Authorization\",",
+          "        value: `Bearer ${token}`",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_id_1",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_id_2",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_id_3",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
